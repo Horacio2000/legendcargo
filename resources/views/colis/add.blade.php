@@ -137,7 +137,7 @@
                                         <div>
                                         <label for="courier_article_number" class="text-sm font-semibold">Quantité<span
                                                     class="mark">*</span></label>
-                                            <input class="text-sm form-input w-full p-2 rounded-lg border-gray-300 requiredSK" type="number" id="courier_article_number" name="courier_article_number[]"
+                                            <input class="text-sm form-input w-full p-2 rounded-lg border-gray-300 requiredSK" type="number" id="courier_article_number" name="courier_article_number"
                                              placeholder="Saisissez le nombre d'articles">
                                         </div>
                                     </div>
@@ -145,7 +145,7 @@
                                         <div>
                                             <label for="courier_price" class="text-sm font-semibold">Prix d'achat(CFA)<span
                                                     class="mark">*</span></label>
-                                            <input class="text-sm form-input w-full p-2 rounded-lg border-gray-300 requiredSK" type="number" id="courier_price" name="courier_price[]"
+                                            <input class="text-sm form-input w-full p-2 rounded-lg border-gray-300 requiredSK" type="number" id="courier_price" name="courier_price"
                                              placeholder="">
                                         </div>
                                         <div>

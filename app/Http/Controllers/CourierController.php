@@ -98,16 +98,17 @@ class CourierController extends Controller
             'receiver_name' => 'required|max:50',
             'receiver_phone' => 'required|max:50',
             'courier_type' => 'required',
-            'courier_content'=>'required|string',
-            'courier_article_number.*'=>'required|numeric',
-            'courier_price.*'=>'required|numeric',
-            'courier_date_sent'=>'required|date',
             'courier_quantity.*' => 'required|numeric',
             'courier_fee.*' => 'required|numeric',
+            'courier_content'=>'required|string',
+            'courier_article_number'=>'required|numeric',
+            'courier_price'=>'required|numeric',
+            'courier_date_sent'=>'required|date'
         ]);
 
 
-        $data = $request->except('_token','courier_type','courier_quantity','courier_fee', 'shipment_mode');
+        $data = $request->except('_token','courier_type','courier_quantity','courier_fee', 'shipment_mode', 
+        'courier_content', 'courier_article_number', 'courier_price', 'courier_date_sent');
 
         if (CourierInfo::first()) {
 
@@ -140,29 +141,34 @@ class CourierController extends Controller
             $courierProductInfo->courier_code = $courier_code;
             $courierProductInfo->courier_info_id = $courierInfo->id;
             $courierProductInfo->courier_type = $request->courier_type[$i];
-            $courierProductInfo->courier_content = $request->courier_content[$i];
-            $courierProductInfo->courier_article_number = $request->courier_article_number[$i];
-            $courierProductInfo->courier_price = $request->courier_price[$i];
-            $courierProductInfo->courier_date_sent = $request->courier_date_sent[$i];
             $courierProductInfo->courier_quantity = $request->courier_quantity[$i];
             $courierProductInfo->courier_fee = $request->courier_fee[$i];
+            $courierProductInfo->courier_content = $request->courier_content;
+            $courierProductInfo->courier_article_number = $request->courier_article_number;
+            $courierProductInfo->courier_price = $request->courier_price;
+            $courierProductInfo->courier_date_sent = $request->courier_date_sent;
             $courierProductInfo->save();
         }
-
         //return redirect()->route('colis.invoice', $courierInfo->id)->withSuccess("Colis créé avec succès");
         return redirect()->route('colis.index', $courierInfo->id)->withSuccess("Colis créé avec succès");
     }
 
     public function courierInvoice(CourierInfo $courierInfo) {
-
-        $courier_code = CourierProductInfo::where('courier_info_id', $courierInfo->id)->first()->courier_code;
-
-        $code = '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG($courier_code, 'C128') . '" alt="barcode"   />' . "<br>" . $courier_code;
-
-        $gs = GeneralSetting::first();
-        $courierProductInfoList = CourierProductInfo::with('courier_types')->where('courier_info_id', $courierInfo->id)->get();
-
-
-        return view('colis.invoice', compact('courierInfo', 'courierProductInfoList', 'gs', 'code'));
+        $courierProductInfo = CourierProductInfo::where('courier_info_id', $courierInfo->id)->first();
+    
+        // Vérifier si un CourierProductInfo a été trouvé
+        if ($courierProductInfo) {
+            $courier_code = $courierProductInfo->courier_code;
+            $code = '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG($courier_code, 'C128') . '" alt="barcode"   />' . "<br>" . $courier_code;
+    
+            $gs = GeneralSetting::first();
+            $courierProductInfoList = CourierProductInfo::with('courier_types')->where('courier_info_id', $courierInfo->id)->get();
+    
+            return view('colis.invoice', compact('courierInfo', 'courierProductInfoList', 'gs', 'code'));
+        } else {
+            // Gérer le cas où aucun CourierProductInfo n'est trouvé
+            // Par exemple, renvoyer un message d'erreur ou rediriger vers une autre page
+        }
     }
+    
 }

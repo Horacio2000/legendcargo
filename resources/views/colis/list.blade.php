@@ -39,9 +39,18 @@
                             </td>
 
                             <td class="px-6 py-4 whitespace-nowrap border-b border-gray-200">
-                                <div class="text-sm leading-5 text-gray-900">{{ App\Models\CourierProductInfo::where('courier_info_id', $courier->id)->first()->courier_code }}</div>
-
+                                <div class="text-sm leading-5 text-gray-900">
+                                    @php
+                                        $courierProductInfo = App\Models\CourierProductInfo::where('courier_info_id', $courier->id)->first();
+                                    @endphp
+                                    @if ($courierProductInfo)
+                                        {{ $courierProductInfo->courier_code }}
+                                    @else
+                                        Aucun numéro de suivi trouvé
+                                    @endif
+                                </div>
                             </td>
+
 
                             <td class="px-6 py-4 whitespace-nowrap border-b border-gray-200 text-sm leading-5 text-gray-500"> {{ $courier->sender_name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap border-b border-gray-200 text-sm leading-5 text-gray-500">{{ $courier->sender_phone }}</td>
